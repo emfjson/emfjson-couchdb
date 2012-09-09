@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipselabs.emfjson.couchdb.feature_0.5.0.qualifier.jar" id="org.eclipselabs.emfjson.couchdb.feature" version="0.5.0.qualifier">
+      <category name="org.eclipselabs.emfjson.couchdb"/>
+   </feature>
+   <category-def name="org.eclipselabs.emfjson.couchdb" label="Couch-EMF">
+      <description>
+         CouchDB EMF.
+      </description>
+   </category-def>
+</site>
