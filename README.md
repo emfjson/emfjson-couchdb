@@ -1,5 +1,13 @@
 CouchDB for EMF
 
+# Downloads
+
+ - Eclipse Update Site: http://ghillairet.github.com/p2
+
+# Dependencies
+  
+  - Eclipse [EMF](http://www.eclipse.org/emf) 2.6.0
+  - [EMFJSON](http://github.com/ghillairet/emfjson) 0.4.0
 
 # Couch-emf starter guide
 
