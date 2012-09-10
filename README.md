@@ -1,19 +1,19 @@
-CouchDB for EMF
+# CouchDB for EMF
 
-# Downloads
+## Downloads
 
  - Eclipse Update Site: http://ghillairet.github.com/p2
 
-# Dependencies
+## Dependencies
   
   - Eclipse [EMF](http://www.eclipse.org/emf) 2.6.0
   - [EMFJSON](http://github.com/ghillairet/emfjson) 0.4.0
 
-# Starter guide
+## Starter guide
 
 EMFJs offers support for CouchDB through the implementation of a custom [URIHandler](http://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/resource/impl/URIHandlerImpl.html). This page will show you how store, update and retrieve EMF Resources from CouchDB. 
 
-## Install CouchDB
+### Install CouchDB
 
 First of all [download](http://couchdb.apache.org/downloads.html) and install CouchDB. 
 
@@ -22,7 +22,7 @@ Then start couchdb in a terminal:
 
 Then go to http://127.0.0.1:5984/_utils/index.html, you can now access couchdb web client.
 
-## Storing Resources as Documents
+### Storing Resources as Documents
 _This part suppose that you are familiar with the concepts of EMF Resource, ResourceSet and URI._
 
 The access of EMF resources from CouchDB is done via the Resource API of EMF. To enable the CouchDB support for your EMF models, simply add the following line after you create a ResourceSet.
@@ -72,7 +72,7 @@ resource.getURI() -> http://127.0.0.1:5984/users/ee16fdb915274370e9976fc1fd00ad6
 
 ![CouchDB](http://dl.dropbox.com/u/43033733/Screen%20shot%202012-01-30%20at%2012.21.50.png)
 
-## Updating a Document
+### Updating a Document
 
 The particularity of CouchDB is that it provides a built-in mechanism to handle revisions. If you make changes to the objects contained in a Resource, and re-save it, it will create a new revision of the CouchDB document.
 
