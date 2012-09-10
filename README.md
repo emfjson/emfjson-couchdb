@@ -9,6 +9,10 @@
   - Eclipse [EMF](http://www.eclipse.org/emf) 2.6.0
   - [EMFJSON](http://github.com/ghillairet/emfjson) 0.4.0
 
+## License
+ 
+  - [Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html)
+  
 ## Starter guide
 
 EMFJs offers support for CouchDB through the implementation of a custom [URIHandler](http://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/resource/impl/URIHandlerImpl.html). This page will show you how store, update and retrieve EMF Resources from CouchDB. 
