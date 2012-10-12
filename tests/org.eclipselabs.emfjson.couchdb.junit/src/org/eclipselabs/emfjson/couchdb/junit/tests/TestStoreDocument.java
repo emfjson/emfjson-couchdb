@@ -91,7 +91,6 @@ public class TestStoreDocument extends TestSupport {
 		n123.getManyRef().add(n123);
 		
 		Resource resource = resourceSet.createResource(baseURI.appendSegment("nodes"));
-		System.out.println(resource.getURI());
 		resource.getContents().add(n);
 		
 		resource.save(null);

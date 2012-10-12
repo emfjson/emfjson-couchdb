@@ -6,10 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipselabs.emfjson.couchdb.internal.*;
 import org.eclipselabs.emfjson.couchdb.junit.support.TestSupport;
 import org.eclipselabs.emfjson.junit.model.Node;
 import org.junit.Test;
@@ -19,7 +17,7 @@ public class TestLoadDocument extends TestSupport {
 	@Test
 	public void testLoadDocumentByID() throws IOException {
 		Resource resource = resourceSet.createResource(
-				baseURI.appendSegment("nodes").appendSegment("fc4dc3af46a4d5a2a379881926002911"));
+				baseURI.appendSegment("nodes").appendSegment("8557d948f6ef262c0af071937c0065d0"));
 		
 		assertNotNull(resource);
 		
@@ -46,11 +44,4 @@ public class TestLoadDocument extends TestSupport {
 		assertEquals(rootNode, second.getSource());
 	}
 	
-	@Test
-	public void testCloudant() {
-		String db = "";
-		System.out.println( CouchDB.isCouchDbService(URI.createURI(db)) );
-		System.out.println( CouchDB.checkDataBase(URI.createURI(db)) );
-		System.out.println( CouchDB.getContent(URI.createURI(db)) );
-	}
 }

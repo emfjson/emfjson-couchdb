@@ -33,22 +33,15 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.eclipse.emf.common.util.URI;
 import org.eclipselabs.emfjson.internal.JSONSave;
 
+/**
+ * CouchDB, A simple client client for CouchDB Server.
+ * 
+ * 
+ * @author ghillairet
+ *
+ */
 public class CouchDB {
 
-	private static void setAuthenticator(URI uri) {
-		if (uri.userInfo() != null) {
-			final String username = uri.userInfo().split(":")[0];
-			final String password = uri.userInfo().split(":")[1];
-
-			Authenticator.setDefault(new Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(username, password.toCharArray());
-				}
-			});
-			
-		}
-	}
-	
 	public static JsonNode getContent(URI uri) {
 		JsonNode node = null;
 		
@@ -78,8 +71,18 @@ public class CouchDB {
 		return node;
 	}
 
-	public static HttpURLConnection getGetConnection(URI uri) throws MalformedURLException, IOException {
-		return (HttpURLConnection) new URL(uri.toString()).openConnection();
+	public static HttpURLConnection getGetConnection(URI uri) throws IOException {
+		URL url = null;
+		try {
+			url = new URL(uri.toString());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		if (url != null) {
+			return (HttpURLConnection) url.openConnection();
+		} else {
+			return null;
+		}
 	}
 
 	public static HttpURLConnection getConnection(URI uri, String type) throws MalformedURLException, IOException {
@@ -94,7 +97,7 @@ public class CouchDB {
 
 	public static boolean isCouchDbService(URI uri) {
 		final URI baseURI = uri.trimSegments(uri.segmentCount());
-
+		boolean isCouchDB = false;
 		setAuthenticator(uri);
 		
 		try {
@@ -102,9 +105,7 @@ public class CouchDB {
 			InputStream inStream = connection.getInputStream();
 			try {
 				JsonNode node = getRootNode(inStream);
-				JsonNode couchdbNode = node.findValue("couchdb");
-
-				return couchdbNode != null; 
+				isCouchDB = node.has("couchdb");
 			} catch (Exception e){
 				return false;
 			} finally {
@@ -126,7 +127,7 @@ public class CouchDB {
 			Authenticator.setDefault(null);
 		}
 		
-		return false;
+		return isCouchDB;
 	}
 
 	public static void createDataBase(URI uri) {
@@ -342,6 +343,19 @@ public class CouchDB {
 		}	
 	}
 
+	public static JsonParser getJsonParser(InputStream inStream) {
+		final JsonFactory jsonFactory = new JsonFactory();  
+		JsonParser jp = null;
+		try {
+			jp = jsonFactory.createJsonParser(inStream);
+		} catch (JsonParseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return jp;
+	}
+
 	private static URI updateDocument(URI uri, JSONSave writer, JsonNode current) {
 		final String lastRevision = getLastRevisionID(uri);
 		if (current.isObject()) {
@@ -438,6 +452,20 @@ public class CouchDB {
 		return false;
 	}
 
+	private static void setAuthenticator(URI uri) {
+		if (uri.userInfo() != null) {
+			final String username = uri.userInfo().split(":")[0];
+			final String password = uri.userInfo().split(":")[1];
+
+			Authenticator.setDefault(new Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password.toCharArray());
+				}
+			});
+			
+		}
+	}
+	
 	private static int checkResponse(InputStream inStream) {
 		try {
 			JsonNode node = getRootNode(inStream);
@@ -467,19 +495,6 @@ public class CouchDB {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public static JsonParser getJsonParser(InputStream inStream) {
-		final JsonFactory jsonFactory = new JsonFactory();  
-		JsonParser jp = null;
-		try {
-			jp = jsonFactory.createJsonParser(inStream);
-		} catch (JsonParseException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		return jp;
 	}
 
 	private static JsonNode emptyNode() {

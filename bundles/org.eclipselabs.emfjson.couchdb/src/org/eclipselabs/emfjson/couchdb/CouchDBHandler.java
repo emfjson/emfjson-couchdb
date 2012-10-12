@@ -19,11 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
 import org.eclipselabs.emfjson.couchdb.internal.CouchDB;
@@ -49,9 +47,7 @@ public class CouchDBHandler extends URIHandlerImpl {
 				final HttpURLConnection connection = getGetConnection(uri);
 				final InputStream inStream = connection.getInputStream();
 				final JSONLoad loader = new JSONLoad(inStream, options);
-				final Collection<EObject> roots = loader.fillResource(resource);
-
-				resource.getContents().addAll(roots);
+				loader.fillResource(resource);
 			}
 		};
 	}
