@@ -57,10 +57,9 @@ public class CouchDBHandler extends URIHandlerImpl {
 		if (checkDataBase(uri) == 0) {
 			createDataBase(uri);
 		}
-		
 		return new JsOutputStream(options) {
 			public void close() throws IOException {
-				URI documentURI = CouchDB.createOrUpdateDocument(uri, writer, currentRoot);
+				URI documentURI = CouchDB.createOrUpdateDocument(uri, writer, currentRoot);		
 				if (documentURI != uri) {
 					resource.setURI(documentURI);
 				}

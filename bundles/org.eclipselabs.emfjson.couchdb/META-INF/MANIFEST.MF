@@ -12,7 +12,6 @@ Import-Package: org.codehaus.jackson,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.resource,
  org.eclipse.emf.ecore.resource.impl,
- org.eclipse.emf.ecore.xmi.impl,
  org.eclipselabs.emfjson,
  org.eclipselabs.emfjson.common,
  org.eclipselabs.emfjson.internal

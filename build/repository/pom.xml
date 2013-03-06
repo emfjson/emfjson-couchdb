@@ -30,8 +30,8 @@
 								<phase>install</phase>
 								<configuration>
 									<tasks>
-										<unzip src="target/org.eclipselabs.emfjson.repository.zip"
-											dest="../../../p2/emfjson/${build-type}" />
+										<unzip src="target/org.eclipselabs.emfjson.couchdb.repository.zip"
+											dest="../../../p2/couch-emf/${build-type}" />
 									</tasks>
 								</configuration>
 								<goals>

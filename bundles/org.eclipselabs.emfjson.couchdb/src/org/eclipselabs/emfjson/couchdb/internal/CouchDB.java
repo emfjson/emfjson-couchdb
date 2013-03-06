@@ -95,7 +95,7 @@ public class CouchDB {
 		return connection;
 	}
 
-	public static boolean isCouchDbService(URI uri) {
+	public static boolean isCouchDbService(URI uri) {		
 		final URI baseURI = uri.trimSegments(uri.segmentCount());
 		boolean isCouchDB = false;
 		setAuthenticator(uri);
