@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Couch Client Junit
+Bundle-SymbolicName: org.eclipselabs.couchemf.client.junit
+Bundle-Version: 0.6.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipselabs.couchemf.client;bundle-version="0.1.0",
+ org.codehaus.jackson.core;bundle-version="1.6.0",
+ org.codehaus.jackson.mapper;bundle-version="1.6.0",
+ org.junit
