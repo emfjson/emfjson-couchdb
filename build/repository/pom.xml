@@ -10,6 +10,10 @@
 	<artifactId>org.eclipselabs.couchemf.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
 
+    <properties>
+        <composite-path>/Users/guillaume/Projects/p2</composite-path>
+    </properties>
+
 	<profiles>
 		<profile>
 			<id>deploy-repo</id>
@@ -24,15 +28,23 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.2</version>
+						<version>1.7</version>
 						<executions>
 							<execution>
 								<phase>install</phase>
 								<configuration>
-									<tasks>
-										<unzip src="target/org.eclipselabs.couchemf.repository.zip"
-											dest="../../../p2/couch-emf/${build-type}" />
-									</tasks>
+									<target>
+                                        <unzip
+                                            src="target/org.eclipselabs.couchemf.repository-${project.version}.zip"
+                                            dest="../../../p2/couch-emf/${build-type}/${project.version}/${buildQualifier}" />
+                                        <ant
+                                            antfile="/Users/guillaume/bin/composite.xml"
+                                            target="add">
+                                            <property name="user.dir" value="${composite-path}"/>
+                                            <property name="composite.name" value="P2 Repositories"/>
+                                            <property name="child.repository" value="couch-emf/${build-type}/${project.version}/${buildQualifier}"/>
+                                        </ant>
+									</target>
 								</configuration>
 								<goals>
 									<goal>run</goal>
