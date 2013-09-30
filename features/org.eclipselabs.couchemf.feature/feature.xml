@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipselabs.emfjson.couchdb.feature"
-      label="EMFJs CouchDB"
-      version="0.5.0.qualifier"
+      id="org.eclipselabs.couchemf.feature"
+      label="Couch EMF"
+      version="0.6.0.qualifier"
       provider-name="Eclipse Labs">
 
    <description url="http://www.example.com/description">
@@ -94,14 +94,21 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </requires>
 
    <plugin
-         id="org.eclipselabs.emfjson.couchdb"
+         id="org.eclipselabs.couchemf.client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipselabs.emfjson.couchdb.ui"
+         id="org.eclipselabs.couchemf.emfjson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipselabs.couchemf.json"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipselabs.emfjson.couchdb.feature_0.5.0.qualifier.jar" id="org.eclipselabs.emfjson.couchdb.feature" version="0.5.0.qualifier">
-      <category name="org.eclipselabs.emfjson.couchdb"/>
+   <feature url="features/org.eclipselabs.couchemf.feature_0.6.0.qualifier.jar" id="org.eclipselabs.couchemf.feature" version="0.6.0.qualifier">
+      <category name="org.eclipselabs.couchemf"/>
    </feature>
-   <category-def name="org.eclipselabs.emfjson.couchdb" label="Couch-EMF">
+   <category-def name="org.eclipselabs.couchemf" label="Couch EMF">
       <description>
          CouchDB EMF.
       </description>
