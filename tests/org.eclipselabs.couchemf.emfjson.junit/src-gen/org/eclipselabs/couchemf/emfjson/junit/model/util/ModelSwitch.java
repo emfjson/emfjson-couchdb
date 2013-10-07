@@ -4,10 +4,11 @@ package org.eclipselabs.couchemf.emfjson.junit.model.util;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.util.Switch;
-
-import org.eclipselabs.couchemf.emfjson.junit.model.*;
+import org.eclipselabs.couchemf.emfjson.junit.model.ANode;
+import org.eclipselabs.couchemf.emfjson.junit.model.BNode;
+import org.eclipselabs.couchemf.emfjson.junit.model.ModelPackage;
+import org.eclipselabs.couchemf.emfjson.junit.model.Node;
 
 /**
  * <!-- begin-user-doc -->

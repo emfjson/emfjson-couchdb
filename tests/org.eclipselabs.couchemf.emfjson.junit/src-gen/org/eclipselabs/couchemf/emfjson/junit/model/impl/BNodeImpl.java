@@ -3,11 +3,8 @@
 package org.eclipselabs.couchemf.emfjson.junit.model.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipselabs.couchemf.emfjson.junit.model.BNode;
 import org.eclipselabs.couchemf.emfjson.junit.model.ModelPackage;
 

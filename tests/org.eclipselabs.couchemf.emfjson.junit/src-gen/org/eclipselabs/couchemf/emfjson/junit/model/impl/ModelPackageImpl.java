@@ -7,9 +7,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipselabs.couchemf.emfjson.junit.model.ANode;
 import org.eclipselabs.couchemf.emfjson.junit.model.BNode;
 import org.eclipselabs.couchemf.emfjson.junit.model.ModelFactory;

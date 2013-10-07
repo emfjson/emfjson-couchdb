@@ -8,8 +8,7 @@ Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.9.0",
  org.eclipselabs.couchemf.emfjson;bundle-version="0.1.0",
  org.eclipselabs.emfjson;bundle-version="0.6.0",
  org.junit;bundle-version="4.11.0",
- org.eclipselabs.couchemf.client,
- org.codehaus.jackson.core
+ org.eclipselabs.couchemf.client
 Export-Package: org.eclipselabs.couchemf.emfjson.junit,
  org.eclipselabs.couchemf.emfjson.junit.model,
  org.eclipselabs.couchemf.emfjson.junit.model.impl,

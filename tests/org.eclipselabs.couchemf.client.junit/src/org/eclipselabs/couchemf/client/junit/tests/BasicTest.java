@@ -7,10 +7,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
 import org.eclipselabs.couchemf.client.CouchClient;
 import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class BasicTest {
 

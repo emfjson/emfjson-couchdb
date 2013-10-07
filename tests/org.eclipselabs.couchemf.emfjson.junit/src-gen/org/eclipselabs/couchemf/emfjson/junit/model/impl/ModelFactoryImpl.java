@@ -6,12 +6,13 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
-import org.eclipselabs.couchemf.emfjson.junit.model.*;
+import org.eclipselabs.couchemf.emfjson.junit.model.ANode;
+import org.eclipselabs.couchemf.emfjson.junit.model.BNode;
+import org.eclipselabs.couchemf.emfjson.junit.model.ModelFactory;
+import org.eclipselabs.couchemf.emfjson.junit.model.ModelPackage;
+import org.eclipselabs.couchemf.emfjson.junit.model.Node;
 
 /**
  * <!-- begin-user-doc -->

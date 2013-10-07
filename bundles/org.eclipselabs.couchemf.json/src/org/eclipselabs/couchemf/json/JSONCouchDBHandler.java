@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
@@ -13,6 +12,8 @@ import org.eclipselabs.couchemf.client.CouchClient;
 import org.eclipselabs.emfjson.json.map.JSONMapper;
 import org.eclipselabs.emfjson.json.streams.JSONInputStream;
 import org.eclipselabs.emfjson.json.streams.JSONOutputStream;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class JSONCouchDBHandler extends URIHandlerImpl {
 

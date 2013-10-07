@@ -1,10 +1,10 @@
 package org.eclipselabs.couchemf.emfjson.junit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -16,6 +16,8 @@ import org.eclipselabs.couchemf.emfjson.junit.model.ModelFactory;
 import org.eclipselabs.emfjson.resource.JsResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class TestStoreDocument {
 	

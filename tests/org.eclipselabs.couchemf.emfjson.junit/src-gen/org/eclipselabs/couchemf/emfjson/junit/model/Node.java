@@ -3,7 +3,6 @@
 package org.eclipselabs.couchemf.emfjson.junit.model;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

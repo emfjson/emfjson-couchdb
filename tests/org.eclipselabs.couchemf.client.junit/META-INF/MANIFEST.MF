@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipselabs.couchemf.client.junit
 Bundle-Version: 0.6.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipselabs.couchemf.client;bundle-version="0.1.0",
- org.codehaus.jackson.core;bundle-version="1.6.0",
- org.codehaus.jackson.mapper;bundle-version="1.6.0",
- org.junit
+ org.junit;bundle-version="4.0.0"
+Bundle-Vendor: Eclipse Labs
+Export-Package: org.eclipselabs.couchemf.client.junit.tests
+Import-Package: org.osgi.framework;version="1.7.0"
