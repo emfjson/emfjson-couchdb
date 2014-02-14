@@ -2,7 +2,7 @@
 <feature
       id="org.eclipselabs.couchemf.feature"
       label="Couch EMF"
-      version="0.6.0.qualifier"
+      version="0.1.0.qualifier"
       provider-name="Eclipse Labs">
 
    <description url="http://www.example.com/description">
@@ -87,10 +87,12 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <requires>
-      <import plugin="org.eclipse.emf.common"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.emf.ecore.xmi"/>
-      <import plugin="org.eclipselabs.emfjson"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-core"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-databind"/>
+      <import plugin="org.eclipselabs.couchemf.client" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipselabs.emfjson" version="0.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.8.0" match="compatible"/>
+      <import plugin="org.eclipselabs.emfjson.json" version="0.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

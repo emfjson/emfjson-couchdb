@@ -19,7 +19,6 @@ public class JSONCouchDBHandler extends URIHandlerImpl {
 
 	@Override
 	public boolean canHandle(URI uri) {
-		System.out.println(uri);
 		final CouchClient client = new CouchClient.
 				Builder().
 				url(uri.trimQuery().toString()).

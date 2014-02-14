@@ -2,15 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Couch EMFJSON Junit
 Bundle-SymbolicName: org.eclipselabs.couchemf.emfjson.junit;singleton:=true
-Bundle-Version: 0.6.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.9.0",
- org.eclipselabs.couchemf.emfjson;bundle-version="0.1.0",
- org.eclipselabs.emfjson;bundle-version="0.6.0",
- org.junit;bundle-version="4.11.0",
- org.eclipselabs.couchemf.client
-Export-Package: org.eclipselabs.couchemf.emfjson.junit,
- org.eclipselabs.couchemf.emfjson.junit.model,
- org.eclipselabs.couchemf.emfjson.junit.model.impl,
- org.eclipselabs.couchemf.emfjson.junit.model.util
+Require-Bundle: org.eclipse.emf.ecore,
+ org.eclipselabs.emfjson,
+ org.eclipselabs.couchemf.client,
+ org.eclipselabs.couchemf.emfjson,
+ org.junit
+Export-Package: org.eclipselabs.couchemf.emfjson.junit
 Bundle-Vendor: Eclipse Labs
+Import-Package: com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ org.junit

@@ -54,7 +54,9 @@ public class CouchClient extends Observable {
 	 * @throws JsonProcessingException
 	 */
 	public boolean isConnected() throws IOException, JsonProcessingException {
-		return mapper.readTree(client.send("GET").execute()).has("couchdb");
+		String result = client.send("GET").execute();
+		System.out.println("result " + result);
+		return mapper.readTree(result).has("couchdb");
 	}
 
 	/**

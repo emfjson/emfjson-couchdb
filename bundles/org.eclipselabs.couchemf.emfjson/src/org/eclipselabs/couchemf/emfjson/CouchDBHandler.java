@@ -29,11 +29,11 @@ public class CouchDBHandler extends URIHandlerImpl {
 			return client.isConnected();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
-
-		return false;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package org.eclipselabs.couchemf.client.junit.tests;
+package org.eclipselabs.couchemf.client.junit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

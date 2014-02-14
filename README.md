@@ -6,8 +6,9 @@
 
 ## Dependencies
 
-  - Eclipse [EMF](http://www.eclipse.org/emf) 2.6.0
-  - [EMFJSON](http://github.com/ghillairet/emfjson) 0.5.0
+  - Eclipse [EMF](http://www.eclipse.org/emf) 2.8.0
+  - [EMFJSON](http://github.com/ghillairet/emfjson) 0.7.0
+  - Jackson > 2.0.0
 
 ## License
 
