@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class StoreDocumentTest extends CouchTestSupport {
 
-	private CouchClient client = new CouchClient.Builder().build();
+	private CouchClient client = new CouchClient();
 
 	@Before
 	@Override
@@ -77,7 +77,7 @@ public class StoreDocumentTest extends CouchTestSupport {
 //		
 //		resource.save(null);
 //	}
-//	
+	
 //	@Test
 //	public void testStoreDocumentWithOneObjectAndUpdate() throws IOException {
 //		Resource resource = resourceSet.createResource(URI.createURI(url));
@@ -124,7 +124,7 @@ public class StoreDocumentTest extends CouchTestSupport {
 //		
 //		resource.save(null);
 //	}
-//	
+	
 //	@Test
 //	public void testCreateStoreDocumentNotExistant() throws IOException {
 //		Resource resource = resourceSet.createResource(baseURI.appendSegment("emfjson_test").appendSegment("test_create"));
@@ -137,7 +137,7 @@ public class StoreDocumentTest extends CouchTestSupport {
 //		
 //		resource.save(null);
 //	}
-//	
+	
 //	@Test
 //	public void testCreateStoreDocumentDatabaseNotExistant() throws IOException {
 //		Resource resource = resourceSet.createResource(baseURI.appendSegment("emfjson_not_exist").appendSegment("test_create"));

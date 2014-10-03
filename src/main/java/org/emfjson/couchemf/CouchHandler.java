@@ -19,10 +19,13 @@ public class CouchHandler extends URIHandlerImpl {
 
 	@Override
 	public boolean canHandle(URI uri) {
-		final CouchClient client = new CouchClient.
-				Builder().
-				url(uri.toString()).
-				build();
+		CouchClient client = null;
+		try {
+			client = getClient(uri);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 
 		try {			
 			return client.isConnected();

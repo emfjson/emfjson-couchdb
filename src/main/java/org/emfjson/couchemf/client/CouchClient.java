@@ -23,17 +23,25 @@ public class CouchClient extends Observable {
 	final ObjectMapper mapper = new ObjectMapper();
 
 	private final URL baseURL;
-//	private String path;
-
-//	private CouchClient(URL baseURL, String path) {
-//		this.baseURL = baseURL;
-//		this.path = path;
-//		this.http = new HttpClient(baseURL);
-//	}
 
 	public CouchClient(URL baseURL) {
 		this.baseURL = baseURL;
 		this.http = new HttpClient(baseURL);
+	}
+
+	public CouchClient() {
+		this.baseURL = getDefault();	
+		this.http = new HttpClient(baseURL);
+	}
+
+	private static final URL getDefault() {
+		URL defaultURL = null;
+		try {
+			defaultURL = new URL("http://127.0.0.1:5984/");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return defaultURL;
 	}
 
 	/**
@@ -150,68 +158,6 @@ public class CouchClient extends Observable {
 	@Override
 	public synchronized boolean hasChanged() {
 		return super.hasChanged();
-	}
-
-	/**
-	 * {@link CouchClient} builder class.
-	 * 
-	 * <pre>
-	 * 
-	 * // Using default address (http://127.0.0.1:5984)
-	 * //
-	 * CouchClient client = new CouchClient.Builder().build();
-	 * 
-	 * // Specific CouchDB address
-	 * // 
-	 * CouchClient client = new CouchClient.Builder()
-	 * 	.url(http://some.couch.address:3455/)
-	 * 	.build();
-	 * </pre>
-	 *
-	 */
-	public static class Builder {
-
-		private final String defaultUrl = "http://127.0.0.1:5984/";
-		private String url = null;
-		public Builder() {}
-
-		public Builder url(String url) {
-			this.url = url;
-			return this;
-		}
-
-		public CouchClient build() {
-			URL clientUrl = null;
-			if (this.url == null) {
-				try {
-					clientUrl = new URL(this.defaultUrl);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			} else {
-				try {
-					clientUrl = new URL(this.url);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-
-//			String path = null;
-//			if (!clientUrl.getPath().isEmpty()) {
-//				path = clientUrl.getPath();
-//			}
-//
-//			try {
-//				clientUrl = HttpClient.baseURL(clientUrl);
-//			} catch (MalformedURLException e) {
-//				e.printStackTrace();
-//			} catch (URISyntaxException e) {
-//				e.printStackTrace();
-//			}
-
-			return new CouchClient(clientUrl);
-		}
-
 	}
 
 }
