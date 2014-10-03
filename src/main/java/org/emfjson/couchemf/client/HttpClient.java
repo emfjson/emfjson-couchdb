@@ -156,7 +156,11 @@ class HttpClient {
 				connection.setRequestProperty("Accept", "application/json");
 
 				if (data != null) writeData(connection, data);
-				result = readData(connection);
+				try {
+					result = readData(connection);
+				} catch (IOException e) {
+					throw e;
+				}
 			}
 
 			return result;

@@ -5,38 +5,73 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.emfjson.couchemf.CouchHandler;
-import org.emfjson.jackson.resource.JsonResourceFactory;
+import org.emfjson.couchemf.tests.model.ANode;
+import org.emfjson.couchemf.tests.model.BNode;
+import org.emfjson.couchemf.tests.model.ModelFactory;
+import org.emfjson.couchemf.tests.model.ModelPackage;
+import org.emfjson.couchemf.tests.model.Node;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoadDocumentTest {
+public class LoadDocumentTest extends CouchTestSupport {
 
-	private ResourceSet resourceSet;
-	private URI baseURI = URI.createURI("http://models");
-	private URI couchURI = URI.createURI("http://127.0.0.1:5984/models");
+	private Node createModel() {
+		Node root = ModelFactory.eINSTANCE.createNode();
+		root.setLabel("Root");
+		root.setValue("myValue");
+		
+		ANode a = ModelFactory.eINSTANCE.createANode();
+		a.setLabel("a");
+		BNode b = ModelFactory.eINSTANCE.createBNode();
+		b.setLabel("b");
+		a.setBNode(b);
+		
+		root.getNodes().add(a);
+		root.getNodes().add(b);
 
-	@Before
-	public void setUp() {
-		resourceSet = new ResourceSetImpl();
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new JsonResourceFactory());
-		resourceSet.getURIConverter().getURIHandlers().add(0, new CouchHandler());
-		resourceSet.getURIConverter().getURIMap().put(
-				baseURI.appendSegment(""), 
-				couchURI.appendSegment(""));
+		return root;
 	}
 
+	@Before
+	@Override
+	public void setUp() {
+		super.setUp();
+		
+		Resource res = resourceSet.createResource(baseURI.appendSegment("nodes"));
+		res.getContents().add(createModel());
+
+		try {
+			res.save(null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		res.unload();
+	}
+	
 	@Test
 	public void testLoadDocumentByID() throws IOException {
 		Resource resource = resourceSet.createResource(baseURI.appendSegment("nodes"));
 		assertNotNull(resource);
-		System.out.println(resource.getURI());
+
 		resource.load(null);
-		assertEquals(0, resource.getContents().size());	
+		assertEquals(1, resource.getContents().size());
+		
+		assertEquals(ModelPackage.Literals.NODE, resource.getContents().get(0).eClass());
+		
+		Node n = (Node) resource.getContents().get(0);
+		assertEquals("Root", n.getLabel());
+		assertEquals("myValue", n.getValue());
+		assertEquals(2, n.getNodes().size());
+System.out.println(n.getNodes());
+		assertEquals(ModelPackage.Literals.ANODE, n.getNodes().get(0).eClass());
+		assertEquals(ModelPackage.Literals.BNODE, n.getNodes().get(1).eClass());
+
+		ANode a = (ANode) n.getNodes().get(0);
+		BNode b = (BNode) n.getNodes().get(1);
+
+		assertEquals(b, a.getBNode());
 	}
 
 }

@@ -3,6 +3,8 @@ package org.emfjson.couchemf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
@@ -34,24 +36,28 @@ public class CouchHandler extends URIHandlerImpl {
 
 	@Override
 	public InputStream createInputStream(URI uri, Map<?, ?> options) throws IOException {
-		return new CouchInputStream(uri, options);
+		final CouchClient client = getClient(uri);
+
+		return new CouchInputStream(client, uri, options);
 	}
 
 	@Override
 	public OutputStream createOutputStream(URI uri, Map<?, ?> options) throws IOException {
-		return new CouchOutputStream(uri, options);
-//		return new JsOutputStream(options) {
-//			@Override
-//			public void close() throws IOException {
-//				JsonNode status = client.put(this.currentRoot);
-//				if (status != null && status.has("ok")) {
-//					if (status.get("ok").asBoolean()) {
-//						String rev = status.get("rev").asText();
-//						resource.setURI(resource.getURI().appendQuery("rev="+rev));
-//					}
-//				}
-//			}
-//		};
+		final CouchClient client = getClient(uri);
+
+		return new CouchOutputStream(client, uri, options);
+	}
+
+	private CouchClient getClient(URI uri) throws IOException {
+		URI baseURI = uri.trimQuery().trimFragment().trimSegments(uri.segmentCount());
+		URL url;
+		try {
+			url = new URL(baseURI.toString());
+		} catch (MalformedURLException e) {
+			throw e;
+		}
+
+		return new CouchClient(url);
 	}
 
 }

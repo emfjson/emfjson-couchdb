@@ -5,48 +5,28 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.emfjson.couchemf.CouchHandler;
 import org.emfjson.couchemf.client.CouchClient;
+import org.emfjson.couchemf.client.DB;
 import org.emfjson.couchemf.tests.model.ANode;
 import org.emfjson.couchemf.tests.model.ModelFactory;
-import org.emfjson.jackson.resource.JsonResourceFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class StoreDocumentTest {
-	
-	private ResourceSet resourceSet;
-	private URI baseURI = URI.createURI("http://models");
-	private URI couchURI = URI.createURI("http://127.0.0.1:5984/models");
+public class StoreDocumentTest extends CouchTestSupport {
+
+	private CouchClient client = new CouchClient.Builder().build();
 
 	@Before
+	@Override
 	public void setUp() {
-		resourceSet = new ResourceSetImpl();
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new JsonResourceFactory());
-		resourceSet.getURIConverter().getURIHandlers().add(0, new CouchHandler());
-
-		resourceSet.getURIConverter().getURIMap().put(
-				baseURI.appendSegment(""), 
-				couchURI.appendSegment(""));		
+		super.setUp();
 	}
 
 	@Test
 	public void testStoreDocumentWithOneObject() throws IOException {
-		CouchClient client = new CouchClient.Builder().build();
-
-		// check state of couchdb		
-		assertTrue(client.isConnected());
-		assertTrue(client.hasDatabase("models"));
-		JsonNode result = client.doc("models", "test1");		
-		assertTrue(result.has("error"));
-		assertEquals("not_found", result.get("error").asText());
-		
 		// create and save resource
 		Resource resource = resourceSet.createResource(baseURI.appendSegment("test1"));
 
@@ -58,27 +38,28 @@ public class StoreDocumentTest {
 		resource.save(null);
 		
 		// check added document
-		result = client.doc("models", "test1");
+		DB db = client.db("models");
+		JsonNode result = db.doc("test1").content();
 
 		assertTrue(result.has("_id"));
-		assertTrue(result.has("eClass"));
-		assertEquals("http://eclipselabs.org/couchemf/junit/model#//ANode", result.get("eClass").asText());
-		assertTrue(result.has("label"));
-		assertEquals("test1", result.get("label").asText());
-		assertTrue(result.has("value"));
-		assertEquals("test1", result.get("value").asText());
+		assertTrue(result.has("contents"));
+
+		JsonNode contents = result.get("contents");
+		assertTrue(contents.has("eClass"));
+		assertEquals("http://eclipselabs.org/couchemf/junit/model#//ANode", contents.get("eClass").asText());
+		assertTrue(contents.has("label"));
+		assertEquals("test1", contents.get("label").asText());
+		assertTrue(contents.has("value"));
+		assertEquals("test1", contents.get("value").asText());
 
 		// revision is added to resource URI
 		assertTrue(resource.getURI().hasQuery());
 
-		// delete document
-		result = client.deleteDocument("models", "test1", resource.getURI().query());
-		result = client.doc("models", "test1");
-
-		assertTrue(result.has("error"));
-		assertEquals("not_found", result.get("error").asText());
+		// delete document & db
+		db.doc("models").delete();
+		db.delete();
 	}
-	
+
 //	@Test(expected=IllegalArgumentException.class)
 //	public void testStoreDocumentWithTwoRootObjects() throws IOException {
 //		Resource resource = resourceSet.createResource(URI.createURI(url));

@@ -2,15 +2,12 @@ package org.emfjson.couchemf.client;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Observable;
 
 import javax.xml.ws.http.HTTPException;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,19 +19,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class CouchClient extends Observable {
 
-	private final HttpClient client;
-	private final ObjectMapper mapper = new ObjectMapper();	
-
-	private static final String allDbs = "_all_dbs";
-	private static final String allDocs = "_all_docs";
+	final HttpClient http;
+	final ObjectMapper mapper = new ObjectMapper();
 
 	private final URL baseURL;
-	private final String path;
+//	private String path;
 
-	private CouchClient(URL baseURL, String path) {
+//	private CouchClient(URL baseURL, String path) {
+//		this.baseURL = baseURL;
+//		this.path = path;
+//		this.http = new HttpClient(baseURL);
+//	}
+
+	public CouchClient(URL baseURL) {
 		this.baseURL = baseURL;
-		this.path = path;
-		this.client = new HttpClient(baseURL);
+		this.http = new HttpClient(baseURL);
 	}
 
 	/**
@@ -54,8 +53,8 @@ public class CouchClient extends Observable {
 	 * @throws JsonProcessingException
 	 */
 	public boolean isConnected() throws IOException, JsonProcessingException {
-		String result = client.send("GET").execute();
-		System.out.println("result " + result);
+		String result = http.send("GET").execute();
+
 		return mapper.readTree(result).has("couchdb");
 	}
 
@@ -68,64 +67,38 @@ public class CouchClient extends Observable {
 	 * @throws HTTPException
 	 */
 	public JsonNode dbs() throws IOException, JsonProcessingException {
-		return json(client.send("GET").to(allDbs).execute());
+		return json(
+			http
+			.send("GET")
+			.to(Constants.allDbs)
+			.execute()
+		);
 	}
 
 	/**
 	 * Returns database information.
 	 * 
 	 * @param dbName
-	 * @return {@link JsonNode}
-	 * @throws IOException
-	 * @throws JsonProcessingException
-	 * @throws HTTPException
+	 * @return {@link DB}
+	 * @throws IllegalArgumentException if db name is null
 	 */
-	public JsonNode db(String dbName) throws IOException, JsonProcessingException {
-		if (dbName == null) return null;
+	public DB db(String dbName) {
+		if (dbName == null) throw new IllegalArgumentException("Db name is null");
 
-		return json(client.send("GET").to(dbName).execute());
+		return new DB(this, dbName);
 	}
 
-	/**
-	 * Returns a built-in view of all documents in this database.
-	 * 
-	 * @param dbName
-	 * @return {@link JsonNode}
-	 * @throws IOException
-	 * @throws HTTPException
-	 */
-	public JsonNode docs(String dbName) throws IOException {
-		if (dbName == null) return null;
-
-		return json(client.send("GET").to(dbName + "/" + allDocs).execute());
-	}
-
-	/**
-	 * Returns the latest revision of the document
-	 * 
-	 * @param dbName
-	 * @param docName
-	 * @return {@link JsonNode}
-	 * @throws IOException
-	 * @throws HTTPException
-	 */
-	public JsonNode doc(String dbName, String docName) throws IOException {
-		if (dbName == null || docName == null) return null;
-
-		return json(client.send("GET").to(dbName + "/" + docName).execute());
-	}
-
-	/**
-	 * Returns value of the current client.
-	 * 
-	 * @return {@link JsonNode}
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 * @throws HTTPException
-	 */
-	public JsonNode get() throws JsonProcessingException, IOException {
-		return json(client.send("GET").to(path).execute());
-	}
+//	/**
+//	 * Returns value of the current client.
+//	 * 
+//	 * @return {@link JsonNode}
+//	 * @throws JsonProcessingException
+//	 * @throws IOException
+//	 * @throws HTTPException
+//	 */
+//	public JsonNode get() throws JsonProcessingException, IOException {
+//		return json(http.send("GET").to(path).execute());
+//	}
 	
 	/**
 	 * Returns true if the CouchDB instance has this database.
@@ -136,7 +109,7 @@ public class CouchClient extends Observable {
 	public boolean hasDatabase(String dbName) {
 		JsonNode node = null;
 		try {
-			node = json(client.send("GET").to(dbName).execute());
+			node = json(http.send("GET").to(dbName).execute());
 		} catch (HTTPException e) {
 			return false;
 		} catch (IOException e) {
@@ -146,114 +119,31 @@ public class CouchClient extends Observable {
 		return node.has("db_name");
 	}
 
-	/**
-	 * Creates this database in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @return {@link JsonNode}
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public JsonNode createDatabase(String dbName) throws JsonProcessingException, IOException {
-		return json(client.send("PUT").to(dbName).execute());
-	}
+//	public JsonNode put(JsonNode node) throws IOException {
+//		String data = null;
+//		String result = null;
+//		try {
+//			data = mapper.writeValueAsString(node);
+//		} catch (JsonGenerationException e) {
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}		
+//
+//		if (data != null) {
+//			result = http.send("PUT", data).to(path).execute();
+//		}
+//
+//		if (result != null) {
+//			return json(result);
+//		} else {
+//			return null;
+//		}
+//	}
 
-	/**
-	 * Deletes this database in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @return {@link JsonNode}
-	 * @throws HTTPException
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public JsonNode deleteDatabase(String dbName) throws JsonProcessingException, IOException {
-		return json(client.send("DELETE").to(dbName).execute());
-	}
-
-	/**
-	 * Creates a document from a JsonNode object in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
-	 * @param data
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public JsonNode createDocument(String dbName, String docName, JsonNode data) throws JsonProcessingException, IOException {
-		return createDocument(dbName, docName, mapper.writeValueAsString(data));
-	}
-
-	/**
-	 * Creates a document from a String in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
-	 * @param data
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public JsonNode createDocument(String dbName, String docName, String data) throws JsonProcessingException, IOException {
-		return json(client.send("PUT", data).to(dbName + "/" + docName).execute());
-	}
-
-	/**
-	 * Deletes this document from this database in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public JsonNode deleteDocument(String dbName, String docName) throws JsonProcessingException, IOException {
-		return json(client.send("DELETE").to(dbName + "/" + docName).execute());
-	}
-	
-	/**
-	 * Deletes this document with this revision in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
-	 * @param revision
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public JsonNode deleteDocument(String dbName, String docName, String revision) throws JsonProcessingException, IOException {
-		if (revision.contains("="))
-			revision = revision.split("=")[1];
-
-		return json(client.send("DELETE").to(dbName + "/" + docName).q("rev=" + revision).execute());
-	}
-
-	public JsonNode put(JsonNode node) throws IOException {
-		String data = null;
-		String result = null;
-		try {
-			data = mapper.writeValueAsString(node);
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-
-		if (data != null) {
-			result = client.send("PUT", data).to(path).execute();
-		}
-
-		if (result != null) {
-			return json(result);
-		} else {
-			return null;
-		}
-	}
-
-	private JsonNode json(String value) throws JsonProcessingException, IOException {
+	JsonNode json(String value) throws JsonProcessingException, IOException {
 		return value == null ? null : mapper.readTree(value);
 	}
 
@@ -306,20 +196,20 @@ public class CouchClient extends Observable {
 				}
 			}
 
-			String path = null;
-			if (!clientUrl.getPath().isEmpty()) {
-				path = clientUrl.getPath();
-			}
+//			String path = null;
+//			if (!clientUrl.getPath().isEmpty()) {
+//				path = clientUrl.getPath();
+//			}
+//
+//			try {
+//				clientUrl = HttpClient.baseURL(clientUrl);
+//			} catch (MalformedURLException e) {
+//				e.printStackTrace();
+//			} catch (URISyntaxException e) {
+//				e.printStackTrace();
+//			}
 
-			try {
-				clientUrl = HttpClient.baseURL(clientUrl);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-			
-			return new CouchClient(clientUrl, path);
+			return new CouchClient(clientUrl);
 		}
 
 	}
