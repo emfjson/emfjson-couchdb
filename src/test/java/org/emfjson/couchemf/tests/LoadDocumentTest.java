@@ -64,7 +64,7 @@ public class LoadDocumentTest extends CouchTestSupport {
 		assertEquals("Root", n.getLabel());
 		assertEquals("myValue", n.getValue());
 		assertEquals(2, n.getNodes().size());
-System.out.println(n.getNodes());
+
 		assertEquals(ModelPackage.Literals.ANODE, n.getNodes().get(0).eClass());
 		assertEquals(ModelPackage.Literals.BNODE, n.getNodes().get(1).eClass());
 
