@@ -7,11 +7,10 @@ import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.URIConverter.Saveable;
-import org.emfjson.common.Options;
 import org.emfjson.couchemf.client.CouchClient;
 import org.emfjson.couchemf.client.CouchDocument;
 import org.emfjson.couchemf.client.DB;
-import org.emfjson.jackson.map.ObjectWriter;
+import org.emfjson.jackson.module.EMFModule;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,11 +59,11 @@ public class CouchOutputStream extends ByteArrayOutputStream implements Saveable
 	}
 
 	private JsonNode toJson(Resource resource) {
-		final ObjectMapper jmapper = new ObjectMapper();
-		final ObjectWriter writer = new ObjectWriter(jmapper, resource, Options.from(options).build());
+		final ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new EMFModule(options));
 
-		final JsonNode contents = writer.toNode();
-		final ObjectNode resourceNode = jmapper.createObjectNode();
+		final JsonNode contents = mapper.valueToTree(resource);
+		final ObjectNode resourceNode = mapper.createObjectNode();
 		final String id = uri.segment(1);
 
 		resourceNode.put("_id", id);

@@ -24,20 +24,9 @@ public class CouchDocument {
 	 * 
 	 */
 	public boolean exist() {
-		JsonNode node = null;
-		try {
-			node = client.json(
-				client.http.send("GET").to(
-					db.getName() + "/" + docName
-				).execute()
-			);
-		} catch (HTTPException e) {
-			return false;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JsonNode node = client.content(db.getName() + "/" + docName);
 
-		return node.has("_id");
+		return node != null && node.has("_id");
 	}
 
 	/**
@@ -50,13 +39,7 @@ public class CouchDocument {
 	 * @throws HTTPException
 	 */
 	public JsonNode content() throws JsonProcessingException, IOException {
-		return client.json(
-			client
-			.http
-			.send("GET")
-			.to(db.getName() + "/" + docName)
-			.execute()
-		);
+		return client.content(db.getName() + "/" + docName);
 	}
 
 	/**
@@ -84,13 +67,7 @@ public class CouchDocument {
 	 * @throws IOException
 	 */
 	public JsonNode create(String data) throws JsonProcessingException, IOException {
-		return client.json(
-			client
-			.http
-			.send("PUT", data)
-			.to(db.getName() + "/" + docName)
-			.execute()
-		);
+		return client.put(db.getName() + "/" + docName, data);
 	}
 
 	/**
@@ -103,13 +80,7 @@ public class CouchDocument {
 	 * @throws IOException
 	 */
 	public JsonNode delete() throws JsonProcessingException, IOException {
-		return client.json(
-			client
-			.http
-			.send("DELETE")
-			.to(db.getName() + "/" + docName)
-			.execute()
-		);
+		return client.delete(db.getName() + "/" + docName);
 	}
 	
 	/**
@@ -127,14 +98,7 @@ public class CouchDocument {
 			revision = revision.split("=")[1];
 		}
 
-		return client.json(
-			client
-			.http
-			.send("DELETE")
-			.to(db.getName() + "/" + docName)
-			.q("rev=" + revision)
-			.execute()
-		);
+		return client.delete(db.getName() + "/" + docName + "?rev=" + revision);
 	}
 
 	public String getName() {

@@ -8,13 +8,13 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.URIConverter.Loadable;
-import org.emfjson.common.Options;
 import org.emfjson.couchemf.client.CouchClient;
 import org.emfjson.couchemf.client.CouchDocument;
 import org.emfjson.couchemf.client.DB;
-import org.emfjson.jackson.map.ObjectReader;
+import org.emfjson.jackson.module.EMFModule;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CouchInputStream extends InputStream implements Loadable {
 
@@ -56,13 +56,13 @@ public class CouchInputStream extends InputStream implements Loadable {
 	}
 
 	private void readJson(Resource resource, JsonNode data) throws IOException {
-		final JsonNode contents = data.get("contents");
-		final ObjectReader reader = new ObjectReader(resource, Options.from(options).build());
-		final EObject result = reader.from(contents);
+		final ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new EMFModule(options));
+
+		final EObject result = mapper.readValue(data.get("contents").traverse(), EObject.class);
 
 		if (result != null) {
 			resource.getContents().add(result);
-			reader.resolveEntries();
 		}
 	}
 

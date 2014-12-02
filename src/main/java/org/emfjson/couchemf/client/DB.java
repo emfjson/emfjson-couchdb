@@ -28,13 +28,7 @@ public class DB {
 	public JsonNode docs(String dbName) throws IOException {
 		if (dbName == null) return null;
 
-		return client.json(
-			client
-			.http
-			.send("GET")
-			.to(dbName + "/" + Constants.allDocs)
-			.execute()
-		);
+		return client.content(dbName + "/" + Constants.allDocs);
 	}
 
 	/**
@@ -43,16 +37,9 @@ public class DB {
 	 * @return {@link Boolean}
 	 */
 	public boolean exist() {
-		JsonNode node = null;
-		try {
-			node = client.json(client.http.send("GET").to(dbName).execute());
-		} catch (HTTPException e) {
-			return false;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JsonNode node = client.content(dbName);
 
-		return node.has("db_name");
+		return node != null && node.has("db_name");
 	}
 	
 	/**
@@ -63,13 +50,7 @@ public class DB {
 	 * @throws IOException
 	 */
 	public JsonNode create() throws JsonProcessingException, IOException {
-		return client.json(
-			client
-			.http
-			.send("PUT")
-			.to(dbName)
-			.execute()
-		);
+		return client.put(dbName, "");
 	}
 
 	/**
@@ -81,13 +62,7 @@ public class DB {
 	 * @throws IOException
 	 */
 	public JsonNode delete() throws JsonProcessingException, IOException {
-		return client.json(
-			client
-			.http
-			.send("DELETE")
-			.to(dbName)
-			.execute()
-		);
+		return client.delete(dbName);
 	}
 
 	/**
@@ -109,13 +84,7 @@ public class DB {
 	}
 
 	public JsonNode info() throws JsonProcessingException, IOException {
-		return client.json(
-			client
-			.http
-			.send("GET")
-			.to(dbName)
-			.execute()
-		);
+		return client.content(dbName);
 	}
 
 }

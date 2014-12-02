@@ -10,6 +10,11 @@ import javax.xml.ws.http.HTTPException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 /**
  * Simple client for CouchDB.
@@ -19,19 +24,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class CouchClient extends Observable {
 
-	final HttpClient http;
+//	final HttpClient http;
 	final ObjectMapper mapper = new ObjectMapper();
+	
+	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+	private OkHttpClient client = new OkHttpClient();
 
 	private final URL baseURL;
 
 	public CouchClient(URL baseURL) {
 		this.baseURL = baseURL;
-		this.http = new HttpClient(baseURL);
+//		this.http = new HttpClient(baseURL);
 	}
 
 	public CouchClient() {
 		this.baseURL = getDefault();	
-		this.http = new HttpClient(baseURL);
+//		this.http = new HttpClient(baseURL);
 	}
 
 	private static final URL getDefault() {
@@ -61,9 +69,14 @@ public class CouchClient extends Observable {
 	 * @throws JsonProcessingException
 	 */
 	public boolean isConnected() throws IOException, JsonProcessingException {
-		String result = http.send("GET").execute();
+		Request request = new Request.Builder()
+			.url(baseURL)
+			.get()
+			.build();
 
-		return mapper.readTree(result).has("couchdb");
+		Response response = client.newCall(request).execute();
+
+		return mapper.readTree(response.body().bytes()).has("couchdb");
 	}
 
 	/**
@@ -75,12 +88,19 @@ public class CouchClient extends Observable {
 	 * @throws HTTPException
 	 */
 	public JsonNode dbs() throws IOException, JsonProcessingException {
-		return json(
-			http
-			.send("GET")
-			.to(Constants.allDbs)
-			.execute()
-		);
+		Request request = new Request.Builder()
+			.url(baseURL.toString() + Constants.allDbs)
+			.get()
+			.build();
+
+		Response response = client.newCall(request).execute();
+		return json(response.body().string());
+//		return json(
+//			http
+//			.method("GET")
+//			.to(Constants.allDbs)
+//			.send()
+//		);
 	}
 
 	/**
@@ -115,14 +135,27 @@ public class CouchClient extends Observable {
 	 * @return {@link Boolean}
 	 */
 	public boolean hasDatabase(String dbName) {
+		Request request = new Request.Builder()
+			.url(baseURL.toString() + dbName)
+			.get()
+			.build();
+
 		JsonNode node = null;
 		try {
-			node = json(http.send("GET").to(dbName).execute());
-		} catch (HTTPException e) {
-			return false;
+			Response response = client.newCall(request).execute();
+			node = json(response.body().string());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+//		JsonNode node = null;
+//		try {
+//			node = json(http.method("GET").to(dbName).send());
+//		} catch (HTTPException e) {
+//			return false;
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 		return node.has("db_name");
 	}
@@ -158,6 +191,72 @@ public class CouchClient extends Observable {
 	@Override
 	public synchronized boolean hasChanged() {
 		return super.hasChanged();
+	}
+
+	public JsonNode content(String path) {
+		Request request = new Request.Builder()
+			.url(baseURL.toString() + path)
+			.get()
+			.build();
+		
+		Response response = null;
+		try {
+			 response = client.newCall(request).execute();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		try {
+			return json(response.body().string());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public JsonNode put(String path, String data) {
+		Request request = new Request.Builder()
+			.url(baseURL.toString() + path)
+			.put(RequestBody.create(JSON, data))
+			.build();
+
+		Response response = null;
+		try {
+			 response = client.newCall(request).execute();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		try {
+			return json(response.body().string());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public JsonNode delete(String path) {
+		Request request = new Request.Builder()
+			.url(baseURL.toString() + path)
+			.delete()
+			.build();
+
+		Response response = null;
+		try {
+			 response = client.newCall(request).execute();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		try {
+			return json(response.body().string());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
