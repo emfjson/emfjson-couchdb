@@ -28,7 +28,7 @@ public class DB {
 	public JsonNode docs(String dbName) throws IOException {
 		if (dbName == null) return null;
 
-		return client.content(dbName + "/" + Constants.allDocs);
+		return client.content(dbName + "/" + Constants._all_docs);
 	}
 
 	/**
@@ -37,7 +37,13 @@ public class DB {
 	 * @return {@link Boolean}
 	 */
 	public boolean exist() {
-		JsonNode node = client.content(dbName);
+		JsonNode node = null;
+		try {
+			node = client.content(dbName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return node != null && node.has("db_name");
 	}

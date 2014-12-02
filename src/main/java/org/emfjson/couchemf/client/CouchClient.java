@@ -3,11 +3,7 @@ package org.emfjson.couchemf.client;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Observable;
 
-import javax.xml.ws.http.HTTPException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.MediaType;
@@ -22,24 +18,22 @@ import com.squareup.okhttp.Response;
  * See {@link CouchClient.Builder} for creation.
  *
  */
-public class CouchClient extends Observable {
+public class CouchClient {
 
-//	final HttpClient http;
-	final ObjectMapper mapper = new ObjectMapper();
-	
+	public final ObjectMapper mapper = new ObjectMapper();
+
 	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-	private OkHttpClient client = new OkHttpClient();
+
+	private final OkHttpClient client = new OkHttpClient();
 
 	private final URL baseURL;
 
 	public CouchClient(URL baseURL) {
 		this.baseURL = baseURL;
-//		this.http = new HttpClient(baseURL);
 	}
 
 	public CouchClient() {
-		this.baseURL = getDefault();	
-//		this.http = new HttpClient(baseURL);
+		this.baseURL = getDefault();
 	}
 
 	private static final URL getDefault() {
@@ -66,9 +60,8 @@ public class CouchClient extends Observable {
 	 * 
 	 * @return {@link Boolean}
 	 * @throws IOException
-	 * @throws JsonProcessingException
 	 */
-	public boolean isConnected() throws IOException, JsonProcessingException {
+	public boolean isConnected() throws IOException {
 		Request request = new Request.Builder()
 			.url(baseURL)
 			.get()
@@ -84,23 +77,14 @@ public class CouchClient extends Observable {
 	 * 
 	 * @return {@link JsonNode}
 	 * @throws IOException
-	 * @throws JsonProcessingException
-	 * @throws HTTPException
 	 */
-	public JsonNode dbs() throws IOException, JsonProcessingException {
+	public JsonNode dbs() throws IOException {
 		Request request = new Request.Builder()
-			.url(baseURL.toString() + Constants.allDbs)
+			.url(baseURL.toString() + Constants._all_dbs)
 			.get()
 			.build();
 
-		Response response = client.newCall(request).execute();
-		return json(response.body().string());
-//		return json(
-//			http
-//			.method("GET")
-//			.to(Constants.allDbs)
-//			.send()
-//		);
+		return call(request);
 	}
 
 	/**
@@ -115,148 +99,62 @@ public class CouchClient extends Observable {
 
 		return new DB(this, dbName);
 	}
-
-//	/**
-//	 * Returns value of the current client.
-//	 * 
-//	 * @return {@link JsonNode}
-//	 * @throws JsonProcessingException
-//	 * @throws IOException
-//	 * @throws HTTPException
-//	 */
-//	public JsonNode get() throws JsonProcessingException, IOException {
-//		return json(http.send("GET").to(path).execute());
-//	}
 	
 	/**
 	 * Returns true if the CouchDB instance has this database.
 	 * 
 	 * @param dbName
 	 * @return {@link Boolean}
+	 * @throws IOException 
 	 */
-	public boolean hasDatabase(String dbName) {
+	public boolean hasDatabase(String dbName) throws IOException {
 		Request request = new Request.Builder()
 			.url(baseURL.toString() + dbName)
 			.get()
 			.build();
 
-		JsonNode node = null;
-		try {
-			Response response = client.newCall(request).execute();
-			node = json(response.body().string());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-//		JsonNode node = null;
-//		try {
-//			node = json(http.method("GET").to(dbName).send());
-//		} catch (HTTPException e) {
-//			return false;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		JsonNode node = call(request);
 
 		return node.has("db_name");
 	}
 
-//	public JsonNode put(JsonNode node) throws IOException {
-//		String data = null;
-//		String result = null;
-//		try {
-//			data = mapper.writeValueAsString(node);
-//		} catch (JsonGenerationException e) {
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}		
-//
-//		if (data != null) {
-//			result = http.send("PUT", data).to(path).execute();
-//		}
-//
-//		if (result != null) {
-//			return json(result);
-//		} else {
-//			return null;
-//		}
-//	}
-
-	JsonNode json(String value) throws JsonProcessingException, IOException {
+	JsonNode json(String value) throws IOException {
 		return value == null ? null : mapper.readTree(value);
 	}
 
-	@Override
-	public synchronized boolean hasChanged() {
-		return super.hasChanged();
-	}
-
-	public JsonNode content(String path) {
+	public JsonNode content(String path) throws IOException {
 		Request request = new Request.Builder()
 			.url(baseURL.toString() + path)
 			.get()
 			.build();
-		
-		Response response = null;
-		try {
-			 response = client.newCall(request).execute();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
 
-		try {
-			return json(response.body().string());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return call(request);
 	}
 
-	public JsonNode put(String path, String data) {
+	public JsonNode put(String path, String data) throws IOException {
 		Request request = new Request.Builder()
 			.url(baseURL.toString() + path)
 			.put(RequestBody.create(JSON, data))
 			.build();
 
-		Response response = null;
-		try {
-			 response = client.newCall(request).execute();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-		try {
-			return json(response.body().string());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return call(request);
 	}
 
-	public JsonNode delete(String path) {
+	public JsonNode delete(String path) throws IOException {
 		Request request = new Request.Builder()
 			.url(baseURL.toString() + path)
 			.delete()
 			.build();
 
-		Response response = null;
-		try {
-			 response = client.newCall(request).execute();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return call(request);
+	}
 
-		try {
+	private JsonNode call(Request request) throws IOException {
+		Response response = client.newCall(request).execute();
+		if (response != null) {
 			return json(response.body().string());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 }

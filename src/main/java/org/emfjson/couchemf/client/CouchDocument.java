@@ -24,7 +24,12 @@ public class CouchDocument {
 	 * 
 	 */
 	public boolean exist() {
-		JsonNode node = client.content(db.getName() + "/" + docName);
+		JsonNode node = null;
+		try {
+			node = client.content(db.getName() + "/" + docName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		return node != null && node.has("_id");
 	}
