@@ -2,12 +2,20 @@
 
 ## Downloads
 
- - Eclipse Update Site: http://ghillairet.github.com/p2
+Available on sonatype snapshots repository.
+
+```xml
+<dependency>
+    <groupId>org.emfjson</groupId>
+    <artifactId>emfjson-couchdb</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+</dependency>
+```
 
 ## Dependencies
 
   - Eclipse [EMF](http://www.eclipse.org/emf) 2.8.0
-  - [EMFJSON](http://github.com/ghillairet/emfjson) 0.7.0
+  - [EMFJSON](http://github.com/ghillairet/emfjson) 0.9.0
   - Jackson > 2.0.0
 
 ## License
