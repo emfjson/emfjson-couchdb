@@ -69,7 +69,6 @@ public class LoadDocumentTest extends CouchTestSupport {
 		assertEquals(true, n.getBooleanValue());
 		assertEquals(2, n.getContainBs().size());
 
-		System.out.println(n.getContainB());
 		TestB b1 = n.getContainBs().get(0);
 		TestB b2 = n.getContainBs().get(1);
 

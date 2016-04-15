@@ -1,7 +1,6 @@
 package org.emfjson.couchdb.streams;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.ContextAttributes;
 import org.eclipse.emf.common.util.URI;
@@ -13,7 +12,6 @@ import org.emfjson.couchdb.client.CouchClient;
 import org.emfjson.couchdb.client.CouchDocument;
 import org.emfjson.couchdb.client.DB;
 import org.emfjson.jackson.JacksonOptions;
-import org.emfjson.jackson.databind.deser.ResourceDeserializer;
 import org.emfjson.jackson.module.EMFModule;
 
 import java.io.IOException;
@@ -59,32 +57,36 @@ public class CouchInputStream extends InputStream implements Loadable {
 		readJson(resource, doc.contentAsBytes());
 	}
 
-	private void readJson(Resource resource, byte[] data) throws IOException {
+	private void readJson(final Resource resource, byte[] data) throws IOException {
 		ResourceSet resourceSet = resource.getResourceSet();
 		if (resourceSet == null) {
 			resourceSet = new ResourceSetImpl();
 		}
 
 		final ObjectMapper mapper = new ObjectMapper();
-		final JacksonOptions jacksonOptions = JacksonOptions.from(options);
+		final JacksonOptions jacksonOptions = new JacksonOptions
+				.Builder()
+				.build(options);
 
 		final EMFModule module = new EMFModule(resourceSet, jacksonOptions);
-		module.addDeserializer(Resource.class, new ResourceDeserializer(resourceSet, jacksonOptions) {
-			@Override
-			public Resource deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-				return super.deserialize(jp, ctxt);
-			}
-		});
 		mapper.registerModule(module);
 
 		final ContextAttributes attributes = ContextAttributes
 				.getEmpty()
-				.withSharedAttribute("resource", this);
+				.withSharedAttribute("resourceSet", resourceSet)
+				.withSharedAttribute("resource", resource);
 
-		mapper.reader()
-				.with(attributes)
-				.forType(Resource.class)
-				.readValue(data);
+		final JsonNode rootNode = mapper.readTree(data);
+		final JsonNode contents = rootNode.has("contents") ?
+				rootNode.get("contents"):
+				null;
+
+		if (contents != null) {
+			mapper.reader()
+					.with(attributes)
+					.withValueToUpdate(resource)
+					.treeToValue(contents, Resource.class);
+		}
 	}
 
 	@Override

@@ -4,6 +4,9 @@
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl",
     complianceLevel="7.0"
 )
+@Ecore(
+	nsURI="http://emfjson.org/model"
+)
 package org.emfjson.model
 
 class TestA {
