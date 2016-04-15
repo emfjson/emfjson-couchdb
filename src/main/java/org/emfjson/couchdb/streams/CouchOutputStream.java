@@ -1,20 +1,22 @@
-package org.emfjson.couchemf.streams;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Map;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.URIConverter.Saveable;
-import org.emfjson.couchemf.client.CouchClient;
-import org.emfjson.couchemf.client.CouchDocument;
-import org.emfjson.couchemf.client.DB;
-import org.emfjson.jackson.module.EMFModule;
+package org.emfjson.couchdb.streams;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter.Saveable;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.emfjson.couchdb.client.CouchClient;
+import org.emfjson.couchdb.client.CouchDocument;
+import org.emfjson.couchdb.client.DB;
+import org.emfjson.jackson.JacksonOptions;
+import org.emfjson.jackson.module.EMFModule;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Map;
 
 public class CouchOutputStream extends ByteArrayOutputStream implements Saveable {
 
@@ -43,11 +45,7 @@ public class CouchOutputStream extends ByteArrayOutputStream implements Saveable
 		}
 
 		final CouchDocument doc = db.doc(docName);
-
-//		if (!doc.exist()) {
-		JsonNode status = doc.create(toJson(resource));
-//		} else {
-//		}
+		final JsonNode status = doc.create(toJson(resource));
 
 		if (status != null && status.has("ok")) {
 			if (status.get("ok").asBoolean()) {
@@ -59,8 +57,13 @@ public class CouchOutputStream extends ByteArrayOutputStream implements Saveable
 	}
 
 	private JsonNode toJson(Resource resource) {
+		ResourceSet resourceSet = resource.getResourceSet();
+		if (resourceSet == null) {
+			resourceSet = new ResourceSetImpl();
+		}
+
 		final ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new EMFModule(options));
+		mapper.registerModule(new EMFModule(resourceSet, JacksonOptions.from(options)));
 
 		final JsonNode contents = mapper.valueToTree(resource);
 		final ObjectNode resourceNode = mapper.createObjectNode();

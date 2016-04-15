@@ -1,25 +1,22 @@
-package org.emfjson.couchemf;
+package org.emfjson.couchdb;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
+import org.emfjson.couchdb.client.CouchClient;
+import org.emfjson.couchdb.streams.CouchInputStream;
+import org.emfjson.couchdb.streams.CouchOutputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
-import org.emfjson.couchemf.client.CouchClient;
-import org.emfjson.couchemf.streams.CouchInputStream;
-import org.emfjson.couchemf.streams.CouchOutputStream;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class CouchHandler extends URIHandlerImpl {
 
 	@Override
 	public boolean canHandle(URI uri) {
-		CouchClient client = null;
+		CouchClient client;
 		try {
 			client = getClient(uri);
 		} catch (IOException e) {
@@ -27,10 +24,8 @@ public class CouchHandler extends URIHandlerImpl {
 			return false;
 		}
 
-		try {			
+		try {
 			return client.isConnected();
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -52,13 +47,8 @@ public class CouchHandler extends URIHandlerImpl {
 	}
 
 	private CouchClient getClient(URI uri) throws IOException {
-		URI baseURI = uri.trimQuery().trimFragment().trimSegments(uri.segmentCount());
-		URL url;
-		try {
-			url = new URL(baseURI.toString());
-		} catch (MalformedURLException e) {
-			throw e;
-		}
+		final URI baseURI = uri.trimQuery().trimFragment().trimSegments(uri.segmentCount());
+		final URL url = new URL(baseURI.toString());
 
 		return new CouchClient(url);
 	}

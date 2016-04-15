@@ -1,22 +1,22 @@
-# CouchDB for EMF
+# CouchDB Adapter for EMF (Eclipse Modeling Framework)
+
+[![Build Status](https://secure.travis-ci.org/emfjson/emfjson-couchdb.png)](http://travis-ci.org/emfjson/emfjson-couchdb)
 
 ## Downloads
 
- - Eclipse Update Site: http://ghillairet.github.com/p2
+Add the following dependency to your pom file.
 
-## Dependencies
+```xml
+<dependency>
+    <groupId>org.emfjson</groupId>
+    <artifactId>emfjson-couchdb</artifactId>
+    <version>0.2.0</version>
+</dependency>
+```
 
-  - Eclipse [EMF](http://www.eclipse.org/emf) 2.8.0
-  - [EMFJSON](http://github.com/ghillairet/emfjson) 0.7.0
-  - Jackson > 2.0.0
+You can also find the jars in [maven central](http://search.maven.org/#search|ga|1|emfjson-couchdb)
 
-## License
-
-  - [Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html)
-
-## Starter guide
-
-EMFJs offers support for CouchDB through the implementation of a custom [URIHandler](http://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/resource/impl/URIHandlerImpl.html). This page will show you how store, update and retrieve EMF Resources from CouchDB.
+## Usage
 
 ### Install CouchDB
 
@@ -30,7 +30,8 @@ Then go to http://127.0.0.1:5984/_utils/index.html, you can now access couchdb w
 ### Storing Resources as Documents
 _This part suppose that you are familiar with the concepts of EMF Resource, ResourceSet and URI._
 
-The access of EMF resources from CouchDB is done via the Resource API of EMF. To enable the CouchDB support for your EMF models, simply add the following line after you create a ResourceSet.
+The access of EMF resources from CouchDB is done via the Resource API of EMF.
+To enable the CouchDB support for your EMF models, simply add the following line after you create a ResourceSet.
 
 ```java
 ResourceSet resourceSet = new ResourceSetImpl();
@@ -93,3 +94,7 @@ resource.save(null);
 
 You should now notice the presence of different revisions for the corresponding document in the CouchDB Web interface.
 ![CouchDB](http://dl.dropbox.com/u/43033733/Screen%20shot%202012-01-30%20at%2012.23.46.png)
+
+## License
+
+[Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html)

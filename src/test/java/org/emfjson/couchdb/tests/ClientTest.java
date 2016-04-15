@@ -1,21 +1,17 @@
-package org.emfjson.couchemf.tests;
+package org.emfjson.couchdb.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.net.URL;
-
-import org.emfjson.couchemf.client.CouchClient;
-import org.emfjson.couchemf.client.CouchDocument;
-import org.emfjson.couchemf.client.DB;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.emfjson.couchdb.client.CouchClient;
+import org.emfjson.couchdb.client.CouchDocument;
+import org.emfjson.couchdb.client.DB;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.URL;
+
+import static org.junit.Assert.*;
 
 public class ClientTest {
 
@@ -27,14 +23,14 @@ public class ClientTest {
 	}
 
 	@Test
-	public void testConnectionToDefaultServer() throws JsonProcessingException, IOException {
+	public void testConnectionToDefaultServer() throws IOException {
 		assertTrue(client.isConnected());
 	}
 
-	public void testConnectionToFakeServer() throws JsonProcessingException, IOException {
+	@Test(expected = ConnectException.class)
+	public void testConnectionToFakeServer() throws IOException {
 		URL url = new URL("http://127.0.0.1:1334");
 		CouchClient client = new CouchClient(url);
-
 		assertFalse(client.isConnected());
 	}
 
@@ -63,7 +59,7 @@ public class ClientTest {
 	}
 
 	@Test
-	public void testConnectNonExistingDatabaseException() throws JsonProcessingException, IOException {
+	public void testConnectNonExistingDatabaseException() throws IOException {
 		DB db = client.db("fake");
 		JsonNode result = db.info();
 		
@@ -71,12 +67,12 @@ public class ClientTest {
 	}
 
 	@Test
-	public void testConnectNonExistingDatabase() throws JsonProcessingException, IOException {
+	public void testConnectNonExistingDatabase() throws IOException {
 		assertFalse(client.hasDatabase("fake"));
 	}
 
 	@Test
-	public void testCreateAndDeleteDatabase() throws JsonProcessingException, IOException {
+	public void testCreateAndDeleteDatabase() throws IOException {
 		assertFalse(client.hasDatabase("fake"));
 
 		DB db = client.db("fake");
@@ -94,7 +90,7 @@ public class ClientTest {
 	}
 
 	@Test
-	public void testCreateAndDeleteDocument() throws JsonProcessingException, IOException {
+	public void testCreateAndDeleteDocument() throws IOException {
 		assertFalse(client.hasDatabase("fake"));
 
 		DB db = client.db("fake");

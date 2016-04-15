@@ -1,4 +1,4 @@
-package org.emfjson.couchemf.client;
+package org.emfjson.couchdb.client;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -14,13 +14,11 @@ import com.squareup.okhttp.Response;
 
 /**
  * Simple client for CouchDB.
- * 
- * See {@link CouchClient.Builder} for creation.
  *
  */
 public class CouchClient {
 
-	public final ObjectMapper mapper = new ObjectMapper();
+	public final ObjectMapper mapper;
 
 	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -28,15 +26,7 @@ public class CouchClient {
 
 	private final URL baseURL;
 
-	public CouchClient(URL baseURL) {
-		this.baseURL = baseURL;
-	}
-
-	public CouchClient() {
-		this.baseURL = getDefault();
-	}
-
-	private static final URL getDefault() {
+	private static URL getDefault() {
 		URL defaultURL = null;
 		try {
 			defaultURL = new URL("http://127.0.0.1:5984/");
@@ -44,6 +34,19 @@ public class CouchClient {
 			e.printStackTrace();
 		}
 		return defaultURL;
+	}
+
+	public CouchClient(URL baseURL, ObjectMapper mapper) {
+		this.baseURL = baseURL == null ? getDefault() : baseURL;
+		this.mapper = mapper == null ? new ObjectMapper() : mapper;
+	}
+
+	public CouchClient(URL baseURL) {
+		this(baseURL, new ObjectMapper());
+	}
+
+	public CouchClient() {
+		this(getDefault(), new ObjectMapper());
 	}
 
 	/**
@@ -84,7 +87,7 @@ public class CouchClient {
 			.get()
 			.build();
 
-		return call(request);
+		return callAsJson(request);
 	}
 
 	/**
@@ -113,9 +116,9 @@ public class CouchClient {
 			.get()
 			.build();
 
-		JsonNode node = call(request);
+		JsonNode node = callAsJson(request);
 
-		return node.has("db_name");
+		return node != null && node.has("db_name");
 	}
 
 	JsonNode json(String value) throws IOException {
@@ -128,7 +131,16 @@ public class CouchClient {
 			.get()
 			.build();
 
-		return call(request);
+		return callAsJson(request);
+	}
+
+	public byte[] contentAsBytes(String path) throws IOException {
+		Request request = new Request.Builder()
+				.url(baseURL.toString() + path)
+				.get()
+				.build();
+
+		return callAsBytes(request);
 	}
 
 	public JsonNode put(String path, String data) throws IOException {
@@ -137,7 +149,7 @@ public class CouchClient {
 			.put(RequestBody.create(JSON, data))
 			.build();
 
-		return call(request);
+		return callAsJson(request);
 	}
 
 	public JsonNode delete(String path) throws IOException {
@@ -146,13 +158,21 @@ public class CouchClient {
 			.delete()
 			.build();
 
-		return call(request);
+		return callAsJson(request);
 	}
 
-	private JsonNode call(Request request) throws IOException {
+	private JsonNode callAsJson(Request request) throws IOException {
 		Response response = client.newCall(request).execute();
 		if (response != null) {
 			return json(response.body().string());
+		}
+		return null;
+	}
+
+	private byte[] callAsBytes(Request request) throws IOException {
+		Response response = client.newCall(request).execute();
+		if (response != null) {
+			return response.body().bytes();
 		}
 		return null;
 	}

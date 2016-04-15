@@ -1,11 +1,10 @@
-package org.emfjson.couchemf.client;
-
-import java.io.IOException;
-
-import javax.xml.ws.http.HTTPException;
+package org.emfjson.couchdb.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import javax.xml.ws.http.HTTPException;
+import java.io.IOException;
 
 public class DB {
 
@@ -19,11 +18,10 @@ public class DB {
 
 	/**
 	 * Returns a built-in view of all documents in this database.
-	 * 
+	 *
 	 * @param dbName
 	 * @return {@link JsonNode}
 	 * @throws IOException
-	 * @throws HTTPException
 	 */
 	public JsonNode docs(String dbName) throws IOException {
 		if (dbName == null) return null;
@@ -33,7 +31,7 @@ public class DB {
 
 	/**
 	 * Returns true if the CouchDB instance has this database.
-	 * 
+	 *
 	 * @return {@link Boolean}
 	 */
 	public boolean exist() {
@@ -47,33 +45,33 @@ public class DB {
 
 		return node != null && node.has("db_name");
 	}
-	
+
 	/**
 	 * Creates this database in the CouchDB instance.
-	 * 
+	 *
 	 * @return JsonNode
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public JsonNode create() throws JsonProcessingException, IOException {
+	public JsonNode create() throws IOException {
 		return client.put(dbName, "");
 	}
 
 	/**
 	 * Deletes this database in the CouchDB instance.
-	 * 
+	 *
 	 * @return JsonNode
 	 * @throws HTTPException
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public JsonNode delete() throws JsonProcessingException, IOException {
+	public JsonNode delete() throws IOException {
 		return client.delete(dbName);
 	}
 
 	/**
 	 * Returns the document
-	 * 
+	 *
 	 * @param docName
 	 * @return {@link CouchDocument}
 	 * @throws IOException
@@ -89,7 +87,7 @@ public class DB {
 		return dbName;
 	}
 
-	public JsonNode info() throws JsonProcessingException, IOException {
+	public JsonNode info() throws IOException {
 		return client.content(dbName);
 	}
 

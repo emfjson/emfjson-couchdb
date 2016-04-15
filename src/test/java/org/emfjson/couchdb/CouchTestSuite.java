@@ -1,8 +1,8 @@
-package org.emfjson.couchemf.suite;
+package org.emfjson.couchdb;
 
-import org.emfjson.couchemf.tests.ClientTest;
-import org.emfjson.couchemf.tests.LoadDocumentTest;
-import org.emfjson.couchemf.tests.StoreDocumentTest;
+import org.emfjson.couchdb.tests.ClientTest;
+import org.emfjson.couchdb.tests.LoadDocumentTest;
+import org.emfjson.couchdb.tests.StoreDocumentTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

@@ -1,4 +1,4 @@
-package org.emfjson.couchemf.client;
+package org.emfjson.couchdb.client;
 
 import java.io.IOException;
 
@@ -36,69 +36,63 @@ public class CouchDocument {
 
 	/**
 	 * Returns the content of the latest revision of the document
-	 * 
-	 * @param dbName
-	 * @param docName
+	 *
 	 * @return JsonNode
 	 * @throws IOException
 	 * @throws HTTPException
 	 */
-	public JsonNode content() throws JsonProcessingException, IOException {
+	public JsonNode content() throws IOException {
 		return client.content(db.getName() + "/" + docName);
+	}
+
+	public byte[] contentAsBytes() throws IOException {
+		return client.contentAsBytes(db.getName() + "/" + docName);
 	}
 
 	/**
 	 * Creates a document from a JsonNode object in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
+	 *
 	 * @param data
 	 * @return JsonNode
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public JsonNode create(JsonNode data) throws JsonProcessingException, IOException {
+	public JsonNode create(JsonNode data) throws IOException {
 		return create(client.mapper.writeValueAsString(data));
 	}
 
 	/**
 	 * Creates a document from a String in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
+	 *
 	 * @param data
 	 * @return JsonNode
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public JsonNode create(String data) throws JsonProcessingException, IOException {
+	public JsonNode create(String data) throws IOException {
 		return client.put(db.getName() + "/" + docName, data);
 	}
 
 	/**
 	 * Deletes this document from this database in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
+	 *
 	 * @return JsonNode
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public JsonNode delete() throws JsonProcessingException, IOException {
+	public JsonNode delete() throws IOException {
 		return client.delete(db.getName() + "/" + docName);
 	}
 	
 	/**
 	 * Deletes this document with this revision in the CouchDB instance.
-	 * 
-	 * @param dbName
-	 * @param docName
+	 *
 	 * @param revision
 	 * @return JsonNode
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public JsonNode delete(String revision) throws JsonProcessingException, IOException {
+	public JsonNode delete(String revision) throws IOException {
 		if (revision.contains("=")) {
 			revision = revision.split("=")[1];
 		}
